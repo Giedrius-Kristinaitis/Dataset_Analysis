@@ -39,7 +39,7 @@ class Attribute:
 
         return empty_values / len(self.values) * 100
 
-    def card(self) -> int:
+    def cardinality(self) -> int:
         return len(Counter(self.values).keys())
 
 
