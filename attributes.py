@@ -20,11 +20,13 @@ Do not take this code as an example
 """
 
 class Attribute:
-    
-    values = []
 
     def __init__(self, name: str) -> None:
         self.name = name
+        self.values = []
+
+    def add_value(self, value) -> None:
+        self.values.append(value)
 
     def num_of_values(self) -> int:
         return len(self.values)
