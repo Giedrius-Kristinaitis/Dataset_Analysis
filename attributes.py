@@ -20,6 +20,7 @@ Do not take this code as an example
 """
 
 class Attribute:
+    
     values = []
 
     def __init__(self, name: str) -> None:
