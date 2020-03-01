@@ -99,5 +99,5 @@ class CategoricalAttribute(Attribute):
 
         return list(counter.keys())[list(counter.values()).index(max(list(counter.values())))]
 
-    def value_percentage(self, count: int) -> float:
-        return count / len(list(filter(lambda x: x is not None, self.values))) * 100
+    def frequency_percentage(self, frequency: int) -> float:
+        return frequency / len(list(filter(lambda x: x is not None, self.values))) * 100
