@@ -1,5 +1,7 @@
 from file_reader import read_file
 from plotter import plot_histograms
+from attributes import NumericAttribute
+from relations import print_attribute_covariations_and_correlations
 
 attribute_types = {
     "country": "categorical",
@@ -18,9 +20,14 @@ attribute_types = {
 
 data = read_file("data.csv", attribute_types)
 
-plot_histograms(data)
+# step 4
+# plot_histograms(data)
 
+# step 5
 for attribute in data:
     attribute.fill_missing_values()
 
+numeric_attributes = list(filter(lambda x: isinstance(x, NumericAttribute), data))
 
+# step 7
+print_attribute_covariations_and_correlations(numeric_attributes)
