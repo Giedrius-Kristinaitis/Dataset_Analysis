@@ -3,6 +3,7 @@ from math import floor
 from math import ceil
 from math import sqrt
 from math import pow
+from abc import abstractmethod
 
 """
 I do not care about the quality of this code, but it SHOULD be refactored, for example:
@@ -48,6 +49,10 @@ class Attribute:
     def cardinality(self) -> int:
         return len(Counter(self.values).keys())
 
+    @abstractmethod
+    def fill_missing_values(self) -> None:
+        pass
+
 
 class NumericAttribute(Attribute):
 
@@ -84,11 +89,18 @@ class NumericAttribute(Attribute):
 
         return sqrt(sum(values) / len(values) - pow(self.average(), 2))
 
+    def fill_missing_values(self) -> None:
+        avg = self.average()
+
+        for index, value in enumerate(self.values):
+            if not value:
+                self.values[index] = avg
+
 
 class CategoricalAttribute(Attribute):
 
     def mode(self, index: int) -> str:
-        if index != 1 or index != 2:
+        if index not in [1, 2]:
             raise ValueError("Invalid mode index, supported indexes: 1 and 2")
 
         counter = Counter(list(filter(lambda x: x is not None, self.values)))
@@ -107,3 +119,10 @@ class CategoricalAttribute(Attribute):
 
     def frequency_percentage(self, frequency: int) -> float:
         return frequency / len(list(filter(lambda x: x is not None, self.values))) * 100
+
+    def fill_missing_values(self) -> None:
+        mode = self.mode(1)
+
+        for index, value in enumerate(self.values):
+            if not value:
+                self.values[index] = mode

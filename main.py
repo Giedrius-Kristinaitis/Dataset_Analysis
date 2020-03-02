@@ -19,3 +19,8 @@ attribute_types = {
 data = read_file("data.csv", attribute_types)
 
 plot_histograms(data)
+
+for attribute in data:
+    attribute.fill_missing_values()
+
+
