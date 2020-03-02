@@ -28,6 +28,9 @@ class Attribute:
     def add_value(self, value) -> None:
         self.values.append(value)
 
+    def get_filtered_values(self) -> []:
+        return list(filter(lambda x: x is not None, self.values))
+
     def num_of_values(self) -> int:
         return len(self.values)
 

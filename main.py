@@ -1,4 +1,5 @@
 from file_reader import read_file
+from plotter import plot_histograms
 
 attribute_types = {
     "country": "categorical",
@@ -16,3 +17,5 @@ attribute_types = {
 }
 
 data = read_file("data.csv", attribute_types)
+
+plot_histograms(data)
