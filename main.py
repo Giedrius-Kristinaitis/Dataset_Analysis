@@ -1,5 +1,6 @@
 from file_reader import read_file
 from plotter import plot_histograms
+from plotter import plot_correlation_matrix
 from attributes import NumericAttribute
 from relations import print_attribute_covariations_and_correlations
 
@@ -31,3 +32,4 @@ numeric_attributes = list(filter(lambda x: isinstance(x, NumericAttribute), data
 
 # step 7
 print_attribute_covariations_and_correlations(numeric_attributes)
+plot_correlation_matrix(numeric_attributes)
