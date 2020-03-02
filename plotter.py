@@ -1,9 +1,11 @@
 from attributes import Attribute
 from attributes import NumericAttribute
+from attributes import CategoricalAttribute
 from math import log
 from matplotlib import pyplot
 from pandas import DataFrame
 from relations import correlation
+import numpy
 
 def plot_histograms(attributes: [Attribute]) -> None:
     for attribute in attributes:
@@ -42,3 +44,29 @@ def plot_correlation_matrix(attributes: [NumericAttribute]) -> None:
     pyplot.xticks(range(len(corr.columns)), corr.columns, fontsize=8)
     pyplot.yticks(range(len(corr.columns)), corr.columns)
     pyplot.savefig("matrix.png")
+
+def plot_scatter_diagram(a: NumericAttribute, b: NumericAttribute) -> None:
+    pyplot.scatter(a.values, b.values)
+    pyplot.xlabel(a.name)
+    pyplot.ylabel(b.name)
+    pyplot.show()
+
+def plot_bar_diagram(a: CategoricalAttribute, b: CategoricalAttribute) -> None:
+    pyplot.bar(a.values, b.values)
+    pyplot.xlabel(a.name)
+    pyplot.ylabel(b.name)
+    pyplot.show()
+
+def plot_box_diagram(a: NumericAttribute, b: CategoricalAttribute) -> None:
+    columns = []
+
+    for value in b.values:
+        if value in columns:
+            continue
+
+        columns.append(value)
+
+    split = numpy.array_split(a.values, b.cardinality())
+
+    pyplot.boxplot(split, labels=columns, showfliers=False)
+    pyplot.show()

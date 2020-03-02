@@ -4,6 +4,7 @@ from math import ceil
 from math import sqrt
 from math import pow
 from abc import abstractmethod
+import numpy
 
 """
 I do not care about the quality of this code, but it SHOULD be refactored, for example:
@@ -33,13 +34,13 @@ class Attribute:
         return list(filter(lambda x: x is not None, self.values))
 
     def num_of_values(self) -> int:
-        return len(self.values)
+        return len(list(filter(lambda x: x is not None, self.values)))
 
     def percent_of_missing_values(self) -> float:
         empty_values = 0
 
         for value in self.values:
-            if not value:
+            if value:
                 continue
 
             empty_values += 1
@@ -96,6 +97,25 @@ class NumericAttribute(Attribute):
             if not value:
                 self.values[index] = avg
 
+    def remove_outliers(self, m=2):
+        average = self.average()
+        mean_value = numpy.mean(self.values)
+        deviation = numpy.std(self.values)
+
+        for index, value in enumerate(self.values):
+            if abs(value - mean_value) > m * deviation:
+                self.values[index] = average
+
+    def get_normalized_values(self) -> list:
+        new_values = []
+        minimum = self.min_value()
+        maximum = self.max_value()
+
+        for value in self.values:
+            new_values.append(((value - minimum) / (maximum - minimum)) * (1))
+
+        return new_values
+
 
 class CategoricalAttribute(Attribute):
 
@@ -108,14 +128,19 @@ class CategoricalAttribute(Attribute):
         values = list(set(counter.values()))
         values.sort(reverse=True)
 
-        max_value = values[len(values) - index]
+        value_index = index - 1
+
+        if value_index >= len(values):
+            value_index = len(values) - 1
+
+        max_value = values[value_index]
 
         return list(counter.keys())[list(counter.values()).index(max_value)]
 
     def value_frequency(self, value: str) -> int:
         counter = Counter(list(filter(lambda x: x is not None, self.values)))
 
-        return list(counter.keys())[list(counter.values()).index(max(list(counter.values())))]
+        return list(counter.values())[list(counter.keys()).index(value)]
 
     def frequency_percentage(self, frequency: int) -> float:
         return frequency / len(list(filter(lambda x: x is not None, self.values))) * 100
@@ -126,3 +151,46 @@ class CategoricalAttribute(Attribute):
         for index, value in enumerate(self.values):
             if not value:
                 self.values[index] = mode
+
+def print_numeric_attribute_info(attributes: [Attribute]) -> None:
+    print('{:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20}'.format("Pavadinimas", "kiekis", "missing value %", "kardinalumas", "min", "max", "1 quart", "3 quart", "average", "mediana", "deviation"))
+
+    for attribute in attributes:
+        if not isinstance(attribute, NumericAttribute):
+            continue
+
+        print('{:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20}'.format(
+            attribute.name,
+            attribute.num_of_values(),
+            attribute.percent_of_missing_values(),
+            attribute.cardinality(),
+            attribute.min_value(),
+            attribute.max_value(),
+            attribute.quartile(1),
+            attribute.quartile(3),
+            attribute.average(),
+            attribute.quartile(2),
+            attribute.standard_deviation()
+        ))
+
+def print_categorical_attribute_info(attributes: [Attribute]) -> None:
+    print('{:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20}'.format(
+        "Pavadinimas", "kiekis", "missing value %", "kardinalumas", "moda", "moda dazn", "moda %", "2 moda", "2 moda dazn", "2 moda %"
+    ))
+
+    for attribute in attributes:
+        if not isinstance(attribute, CategoricalAttribute):
+            continue
+
+        print('{:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20} {:>20}'.format(
+            attribute.name,
+            attribute.num_of_values(),
+            attribute.percent_of_missing_values(),
+            attribute.cardinality(),
+            attribute.mode(1),
+            attribute.value_frequency(attribute.mode(2)),
+            attribute.frequency_percentage(attribute.value_frequency(attribute.mode(2))),
+            attribute.mode(2),
+            attribute.value_frequency(attribute.mode(2)),
+            attribute.frequency_percentage(attribute.value_frequency(attribute.mode(2)))
+        ))
