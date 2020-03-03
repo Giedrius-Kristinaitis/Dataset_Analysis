@@ -7,6 +7,7 @@ from plotter import plot_scatter_diagram
 from plotter import plot_box_diagram
 from attributes import print_categorical_attribute_info
 from attributes import print_numeric_attribute_info
+from plotter import scatter_plot_matrix
 
 attribute_types = {
     "country": "categorical",
@@ -56,3 +57,7 @@ plot_scatter_diagram(data[5], data[8])
 
 plot_box_diagram(data[6], data[11])
 plot_box_diagram(data[4], data[3])
+
+normalized_values = data[4].get_normalized_values()
+
+scatter_plot_matrix()

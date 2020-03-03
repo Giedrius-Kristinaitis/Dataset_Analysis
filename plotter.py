@@ -6,6 +6,8 @@ from matplotlib import pyplot
 from pandas import DataFrame
 from relations import correlation
 import numpy
+import pandas
+import seaborn
 
 def plot_histograms(attributes: [Attribute]) -> None:
     for attribute in attributes:
@@ -70,3 +72,11 @@ def plot_box_diagram(a: NumericAttribute, b: CategoricalAttribute) -> None:
 
     pyplot.boxplot(split, labels=columns, showfliers=False)
     pyplot.show()
+
+def scatter_plot_matrix() -> None:
+    seaborn.set()
+
+    frame = pandas.read_csv('data.csv', sep='\t')
+    seaborn.pairplot(frame, plot_kws={'edgecolor': 'none', 's': 5})
+    pyplot.savefig("scatter_plot_matrix.png")
+
